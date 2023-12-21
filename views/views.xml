@@ -1,0 +1,120 @@
+<odoo>
+    <data>
+        <!-- Vista form para el documento de costeo -->
+        <record id="view_import_costing_form" model="ir.ui.view">
+            <field name="name">import.costing.form</field>
+            <field name="model">import.costing</field>
+            <field name="arch" type="xml">
+                <form string="Costeo de Importación">
+                    <sheet>
+                        <group>
+                            <field name="pedido"/>
+                            <field name="margen"/>
+                            <field name="financiamiento"/>
+                            <!-- otros campos del documento de costeo si son necesarios -->
+                        </group>
+                        <group>
+                            <field name="seguro_credito"/>
+                            <field name="factor_internacion"/>
+                        </group>
+                        <!-- Primer notebook para Líneas de Producto -->
+                        <notebook>
+                            <page string="Líneas de Producto">
+                                <field name="product_lines" context="{'default_costing_id': active_id}">
+                                    <tree editable="bottom">
+                                        <field name="producto_id"/>
+                                        <field name="codigo_producto"/>
+                                        <field name="descripcion_producto"/>
+                                        <field name="familia_id"/>
+                                        <field name="cantidad"/>
+                                        <field name="costo_unitario_usd"/>
+                                        <field name="costo_unitario"/>
+                                        <!-- Más campos de la línea de producto -->
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                        <!-- Segundo notebook para Líneas de Gastos -->
+                        <notebook>
+                            <page string="Líneas de Gastos">
+                                <field name="expense_lines" context="{'default_costing_id': active_id}">
+                                    <tree editable="bottom">
+                                        <field name="linea"/>
+                                        <field name="tipo"/>
+                                        <field name="conceptos"/>
+                                        <field name="monto_gastos_nacionales"/>
+                                        <field name="monto_usd"/>
+                                        <!-- Más campos de la línea de gasto -->
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                        <field name="total_costo_unitario_usd">total</field>
+                        <field name="total_costo_unitario"></field>
+                        <field name="total_monto_gastos_nacionales"></field>
+                    </sheet>
+                    
+                </form>
+            </field>
+        </record>
+
+        <!-- Vista kanban para el documento de costeo -->
+        <record id="view_import_costing_kanban" model="ir.ui.view">
+            <field name="name">import.costing.kanban</field>
+            <field name="model">import.costing</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_view import_costing_kanban" create="true" delete="true" edit="true">
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click o_kanban_card">
+                                <div class="oe_kanban_details">
+                                    <field name="pedido"/>
+                                    <div><strong>Margen:</strong> <field name="margen"/></div>
+                                    <!-- otros campos que quieras mostrar en la tarjeta kanban -->
+                                    <div class="o_kanban_footer">
+                                        <div class="oe_kanban_bottom_left">
+                                            <span class="oe_kanban_bottom_counter">
+                                                <i class="fa fa-user-o"/> <field name="responsable_id"/>
+                                            </span>
+                                        </div>
+                                        <div class="oe_kanban_bottom_right">
+                                            <field name="estado" widget="statusbar"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Vista tree para el documento de costeo -->
+        <record id="view_import_costing_tree" model="ir.ui.view">
+            <field name="name">import.costing.tree</field>
+            <field name="model">import.costing</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="pedido"/>
+                    <field name="margen"/>
+                    <!-- otros campos -->
+                </tree>
+            </field>
+        </record>
+
+        <!-- Acción para abrir las vistas del documento de costeo -->
+        <record id="action_import_costing_documents" model="ir.actions.act_window">
+            <field name="name">Documentos de Costeo</field>
+            <field name="res_model">import.costing</field>
+            <field name="view_mode">kanban,tree,form</field>
+        </record>
+
+        <!-- Menú principal para Costeo de Importación -->
+        <menuitem id="menu_import_costing_main" name="Costeo de Importación"/>
+
+        <!-- Submenú para ver los Documentos de Costeo de Importación -->
+        <menuitem id="menu_import_costing_documents" name="Documentos"
+                  parent="menu_import_costing_main"
+                  action="action_import_costing_documents"/>
+    </data>
+</odoo>
